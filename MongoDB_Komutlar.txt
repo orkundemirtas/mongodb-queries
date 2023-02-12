@@ -1,0 +1,66 @@
+
+Question : 
+----------------------------------------------MONGO---------------------------------------------------------
+Imagine a mongo collection which has gsm,password and insert_date columns. gsm can be null or equals a number.insert_date and password are default exists.
+Write a mongo query for getting records insert_date which grater than April 1 for exists gsms.//Please send query.
+Example records;
+gsm:5422322323
+password:123456
+insert_date:2022-03-11T14:16:30.228+00:00 
+
+
+Solution :
+
+MongoDB on Centos Installation
+
+sudo nano /etc/yum.repos.d/mongodb-org-4.2.repo
+
+
+[mongodb-org-4.2]
+
+name=MongoDB Repository
+
+baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.2/x86_64/
+
+gpgcheck=1
+
+enabled=1
+
+gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
+
+
+sudo yum install –y mongodb-org
+
+sudo systemctl start mongod
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable mongod
+
+mongo
+
+// Creating Admin User
+db.createUser(
+      {
+      user: "admin",
+      pwd: "admin",
+      roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+      }
+      )
+   
+// Creating Collections
+use gsmcollectiondb
+
+// Inserting datas
+db.gsmcollectiondb.insert([{gsm: "5422322323", password: 123456,"insert_date":ISODate("2022-03-11T14:16:30.228+00:00")}, 
+           {gsm: "5422399923", password: 299654,"insert_date":ISODate("2022-05-11T01:01:30.228+00:00")},
+                   {gsm: "5422425523", password: 139232,"insert_date":ISODate("2022-03-06T22:12:50.228+00:00")},
+				   {gsm: null, password: 144232,"insert_date":ISODate("2022-09-15T22:12:50.228+00:00")}])
+				   
+				   
+// Retrieving datas
+db.gsmcollectiondb.find({
+    insert_date: {
+        $gt: ISODate("2022-04-01T00:00:00.000+00:00")
+    }
+})
